@@ -25,3 +25,7 @@ export function captureScreenshot(
 ): Promise<number> {
   return CropShot.captureScreenshot(x, y, width, height);
 }
+
+export function captureScreenshotWithRef(reactRef: number): Promise<number> {
+  return CropShot.captureScreenshotWithRef(reactRef);
+}

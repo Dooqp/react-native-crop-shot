@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import {
   StyleSheet,
   View,
@@ -6,23 +6,41 @@ import {
   Pressable,
   Dimensions,
   Image,
+  findNodeHandle,
+  SafeAreaView,
+  StatusBar,
 } from 'react-native';
-import { captureScreenshot } from 'react-native-crop-shot';
+import {
+  captureScreenshot,
+  captureScreenshotWithRef,
+} from 'react-native-crop-shot';
 
 const { width, height } = Dimensions.get('window');
 export default function App() {
   const [result, setResult] = useState<string | undefined>();
-
+  const screenShotRef = useRef(null);
   const takeCroppedShot = async () => {
     try {
       const base64Image = await captureScreenshot(0, 0, width, height);
+      // const base64Image = await captureScreenshot(0, 0, width, 300);
       setResult(`data:image/png;base64,${base64Image}`);
     } catch (e) {
       console.log('Crop Error!!');
     }
   };
+  const takeCroppedShotWithRef = async (ref) => {
+    try {
+      const nodeHandle = findNodeHandle(ref.current);
+      if (!nodeHandle) return;
+      const base64Image = await captureScreenshotWithRef(nodeHandle);
+      setResult(`data:image/png;base64,${base64Image}`);
+    } catch (e) {
+      console.log('Ref Crop Error!!', e);
+    }
+  };
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
+      <StatusBar barStyle={'dark-content'} translucent={true} />
       <Pressable
         onPress={() => {
           takeCroppedShot();
@@ -31,6 +49,24 @@ export default function App() {
       >
         <Text>Take Cropped Shot</Text>
       </Pressable>
+      <Pressable
+        onPress={() => {
+          if (!screenShotRef) return;
+          console.log('Pressed');
+          takeCroppedShotWithRef(screenShotRef);
+        }}
+        style={styles.button}
+      >
+        <Text>Take Cropped Shot With Ref</Text>
+      </Pressable>
+      <View
+        style={{
+          width: '100%',
+          height: 200,
+          backgroundColor: 'purple',
+          marginBottom: 20,
+        }}
+      />
       {result && (
         <Image
           resizeMode="contain"
@@ -38,7 +74,12 @@ export default function App() {
           source={{ uri: result }}
         />
       )}
-    </View>
+      <View
+        pointerEvents="none"
+        ref={screenShotRef}
+        style={styles.refContainer}
+      ></View>
+    </SafeAreaView>
   );
 }
 
@@ -46,7 +87,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'space-between',
   },
   box: {
     width: 60,
@@ -65,7 +106,27 @@ const styles = StyleSheet.create({
     left: 0,
     width: Dimensions.get('window').width,
     height: 200,
-    borderWidth: 2,
+    borderWidth: 1,
     borderColor: 'red',
+    backgroundColor: 'pink',
+  },
+  refContainer: {
+    position: 'absolute',
+    top: 0,
+    width: Dimensions.get('window').width,
+    height: 300,
+    borderColor: 'purple',
+    borderWidth: 1,
+  },
+  refInnerContainer: {
+    width: '50%',
+    height: '50%',
+  },
+  scrollViewItem: {
+    width: '100%',
+    height: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 0.5,
   },
 });
