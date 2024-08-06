@@ -45,12 +45,20 @@ class CropShot: NSObject, RCTBridgeModule {
                 reject("E_NO_VIEW", "View not found", nil)
                 return
             }
+            // let frame = view.frame
+            // let x = frame.origin.x
+            // let y = frame.origin.y
+            // let width = frame.size.width
+            // let height = frame.size.height
             
-            let frame = view.frame
-            let x = frame.origin.x
-            let y = frame.origin.y
-            let width = frame.size.width
-            let height = frame.size.height
+            let bound = view.bounds
+            let convertedBound = view.convert(bound, to: nil)
+            let x = convertedBound.origin.x
+            let y = convertedBound.origin.y
+            let width = convertedBound.size.width
+            let height = convertedBound.size.height
+            // print("BOUNDS: Width::\(bound.width), Height:: \(bound.height), MinX:: \(bound.minX), MaxX:: \(bound.maxX), MinY:: \(bound.minY), MaxY:: \(bound.maxY), Size:: \(bound.size), Origin:: \(bound.origin)")
+            // print("CONVERTED BOUNDS: Width::\(convertedBound.width), Height:: \(convertedBound.height), MinX:: \(convertedBound.minX), MaxX:: \(convertedBound.maxX), MinY:: \(convertedBound.minY), MaxY:: \(convertedBound.maxY), Size:: \(convertedBound.size), Origin:: \(convertedBound.origin)")
             // print("Frame Origin: X::\(frame.origin.x), Y:: \(frame.origin.y)")
             // print("Frame Size: Width::\(frame.size.width), Height:: \(frame.size.height)")
             // let fixedCoordinates = UIScreen.main.fixedCoordinateSpace.bounds

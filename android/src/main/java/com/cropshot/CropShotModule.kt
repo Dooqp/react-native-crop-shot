@@ -69,7 +69,8 @@ class CropShotModule(reactContext: ReactApplicationContext) :
     }
     currentActivity.runOnUiThread {
       try {
-        val rootView: View = currentActivity.window.decorView.findViewById(android.R.id.content)
+        //val rootView: View = currentActivity.window.decorView.findViewById(android.R.id.content)
+        val rootView: View = currentActivity.window.decorView.rootView
         val uiManager = reactApplicationContext.getNativeModule(UIManagerModule::class.java)
         val view = uiManager?.resolveView(viewId)
         if (view != null) {
@@ -77,15 +78,28 @@ class CropShotModule(reactContext: ReactApplicationContext) :
               Bitmap.createBitmap(rootView.width, rootView.height, Bitmap.Config.ARGB_8888)
           val canvas = Canvas(screenshot)
           rootView.draw(canvas)
-
+          val screenLocationsConverted = IntArray(2)
+          view.getLocationOnScreen(screenLocationsConverted)
+          // println("Screen Locations::: X: ${screenLocationsConverted[0]}, Y: ${screenLocationsConverted[1]}")
+          val windowLocationsConverted = IntArray(2)
+          view.getLocationInWindow((windowLocationsConverted))
+          // println("Window Locations::: X: ${windowLocationsConverted[0]}, Y: ${windowLocationsConverted[1]}")
+          // println("View Locations::: X: ${view.x}, Y: ${view.y}")
           val croppedScreenshot =
-              Bitmap.createBitmap(
+            Bitmap.createBitmap(
+              screenshot,
+              screenLocationsConverted[0],
+              screenLocationsConverted[1],
+              view.width,
+              view.height
+            )
+             /** Bitmap.createBitmap(
                   screenshot,
                   view.x.toInt(),
                   view.y.toInt(),
                   view.width,
                   view.height
-              )
+              ) **/
 
           val byteArrayOutputStream = ByteArrayOutputStream()
           croppedScreenshot.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream)

@@ -39,47 +39,53 @@ export default function App() {
     }
   };
   return (
-    <SafeAreaView style={styles.container}>
-      <StatusBar barStyle={'dark-content'} translucent={true} />
-      <Pressable
-        onPress={() => {
-          takeCroppedShot();
-        }}
-        style={styles.button}
-      >
-        <Text>Take Cropped Shot</Text>
-      </Pressable>
-      <Pressable
-        onPress={() => {
-          if (!screenShotRef) return;
-          console.log('Pressed');
-          takeCroppedShotWithRef(screenShotRef);
-        }}
-        style={styles.button}
-      >
-        <Text>Take Cropped Shot With Ref</Text>
-      </Pressable>
-      <View
+    <>
+      {/* <View style={{ width: width, height: 150 }} /> */}
+      <SafeAreaView style={styles.container}>
+        <StatusBar barStyle={'dark-content'} translucent={true} backgroundColor={'transparent'} />
+
+        <Pressable
+          onPress={() => {
+            takeCroppedShot();
+          }}
+          style={styles.button}
+        >
+          <Text>Take Cropped Shot</Text>
+        </Pressable>
+        <Pressable
+          onPress={() => {
+            if (!screenShotRef) return;
+            console.log('Pressed');
+            takeCroppedShotWithRef(screenShotRef);
+          }}
+          style={styles.button}
+        >
+          <Text>Take Cropped Shot With Ref</Text>
+        </Pressable>
+        {/* <View
         style={{
           width: '100%',
           height: 200,
           backgroundColor: 'purple',
           marginBottom: 20,
         }}
-      />
-      {result && (
-        <Image
-          resizeMode="contain"
-          style={styles.image}
-          source={{ uri: result }}
-        />
-      )}
-      <View
-        pointerEvents="none"
-        ref={screenShotRef}
-        style={styles.refContainer}
-      ></View>
-    </SafeAreaView>
+      /> */}
+        <View style={{ position: 'absolute', top: 0 }}>
+          <View
+            pointerEvents="none"
+            ref={screenShotRef}
+            style={styles.refContainer}
+          ></View>
+        </View>
+        {result && (
+          <Image
+            resizeMode="contain"
+            style={styles.image}
+            source={{ uri: result }}
+          />
+        )}
+      </SafeAreaView>
+    </>
   );
 }
 
@@ -103,7 +109,7 @@ const styles = StyleSheet.create({
   image: {
     position: 'absolute',
     bottom: 0,
-    left: 0,
+    // left: 0,
     width: Dimensions.get('window').width,
     height: 200,
     borderWidth: 1,
@@ -111,8 +117,8 @@ const styles = StyleSheet.create({
     backgroundColor: 'pink',
   },
   refContainer: {
-    position: 'absolute',
-    top: 0,
+    // position: 'absolute',
+    // top: 300,
     width: Dimensions.get('window').width,
     height: 300,
     borderColor: 'purple',
